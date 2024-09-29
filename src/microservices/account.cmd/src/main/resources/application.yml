@@ -5,13 +5,14 @@ server:
 spring:
   data:
     mongodb:
-      host: localhost
-      port: 27017
+      uri: mongodb://localhost:27017/?directConnection=true
       database: bankAccount
 
   kafka:
     producer:
       bootstrap-servers:
-        - localhost:9092
+        - localhost:39092
+        - localhost:39093
+        - localhost:39094
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
