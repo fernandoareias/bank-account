@@ -15,6 +15,10 @@ public class AccountAggregate extends AggregateRoot {
     private Boolean active;
     private double balance;
 
+    public Boolean getActive() {
+        return active;
+    }
+
     public double getBalance() {
         return balance;
     }

@@ -14,6 +14,7 @@ public abstract class AggregateRoot {
     private final List<Event> changes = new LinkedList<>();
     private final Logger logger = Logger.getLogger(AggregateRoot.class.getName());
 
+
     public String getId() {
         return id;
     }

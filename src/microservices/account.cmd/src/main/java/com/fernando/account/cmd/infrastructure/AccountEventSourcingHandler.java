@@ -6,6 +6,7 @@ import handlers.EventSourcingHandler;
 import infrastructure.EventStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import producers.EventProducer;
 
 import java.util.Comparator;
 
@@ -14,6 +15,9 @@ public class AccountEventSourcingHandler implements EventSourcingHandler<Account
 
     @Autowired
     private EventStore eventStore;
+
+    @Autowired
+    private EventProducer eventProducer;
 
     @Override
     public void save(AggregateRoot aggregateRoot) {
@@ -33,5 +37,22 @@ public class AccountEventSourcingHandler implements EventSourcingHandler<Account
         }
 
         return aggregate;
+    }
+
+    @Override
+    public void republisherEvents() {
+        var aggregateIds = eventStore.getAggregateIds();
+
+        for(var aggregateId: aggregateIds)
+        {
+            var aggregate = getById(aggregateId);
+            if(aggregate == null || !aggregate.getActive()) return;
+            var events = eventStore.getEvents(aggregateId);
+
+            for(var e : events)
+            {
+                eventProducer.producer(e.getClass().getSimpleName(), e);
+            }
+        }
     }
 }
